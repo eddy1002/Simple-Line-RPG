@@ -16,7 +16,7 @@ public class PoolDam_Move : MonoBehaviour {
 		
 	}
 
-    public void MakeDam(float X, float Y)
+    public void MakeDam(float X, float Y, int Power)
     {
         for (int DamNum = 0; DamNum < DamText.Length; DamNum++)
         {
@@ -24,7 +24,7 @@ public class PoolDam_Move : MonoBehaviour {
             {
                 DamText[DamNum].transform.position = new Vector2(X, Y);
                 DamText[DamNum].SetActive(true);
-                DamText[DamNum].GetComponent<DamText_Move>().DamStart(5.0f);
+                DamText[DamNum].GetComponent<DamText_Move>().DamStart(Power);
                 break;    
             }
         }

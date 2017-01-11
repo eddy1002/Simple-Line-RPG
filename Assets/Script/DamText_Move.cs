@@ -23,10 +23,10 @@ public class DamText_Move : MonoBehaviour {
         }
 	}
 
-    public void DamStart(float Power)
+    public void DamStart(int Power)
     {
         LifeTime = 0.75f;
-        gameObject.GetComponent<TextMesh>().text = Mathf.Round(Power * Random.Range(0.75f, 1.25f)).ToString();
+        gameObject.GetComponent<TextMesh>().text = Power.ToString();
         gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0.0f, 0.5f);
     }
 }

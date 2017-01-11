@@ -7,7 +7,9 @@ public class Player_Move : MonoBehaviour {
     public GameObject Player;
     public GameObject PoolDam;
 
-    public GameObject Mob;
+    public GameObject[] Mob;
+
+    public int Power;
 
     public bool Attacking;
     public bool LWalking;
@@ -66,12 +68,41 @@ public class Player_Move : MonoBehaviour {
 
     public void Attack()
     {
-        if (Vector2.Distance(Mob.transform.position, Player.transform.position) < 1.75)
+        int MobNum = FindMob();
+        if (MobNum >= 0)
         {
-            if (Facing && Mob.transform.position.x - Player.transform.position.x > 0 || !Facing && Mob.transform.position.x - Player.transform.position.x < 0)
+            int FinalPower = (int)Mathf.Round(Power * Random.Range(0.75f, 1.25f));
+            PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.75f, FinalPower);
+
+            Mob[MobNum].GetComponent<Mob_Move>().HPPoint -= FinalPower;
+            if (Mob[MobNum].GetComponent<Mob_Move>().HPPoint <= 0)
             {
-                PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob.transform.position.x, 0.75f);
+                Mob[MobNum].GetComponent<Mob_Move>().Death();
             }
         }
+    }
+
+    public int FindMob()
+    {
+        int MobNum = -1;
+        float MobRangeBank = -1.0f;
+        for (int i = 0; i < Mob.Length; i++)
+        {
+            if (Mob[i].GetComponent<Mob_Move>().HPPoint > 0)
+            {
+                float MobFacing = Mob[i].transform.position.x - Player.transform.position.x;
+                float MobRange = Vector2.Distance(Mob[i].transform.position, Player.transform.position);
+                if (Facing && MobFacing > 0.0f || !Facing && MobFacing <= 0.0f)
+                {
+                    if (MobRange < 1.75 && (MobRangeBank == -1.0f || MobRangeBank > MobRange))
+                    {
+                        MobRangeBank = MobRange;
+                        MobNum = i;
+                    }
+                }
+            }
+        }
+
+        return MobNum;
     }
 }
