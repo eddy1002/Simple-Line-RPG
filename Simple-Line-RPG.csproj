@@ -79,6 +79,7 @@
     <Compile Include="Assets\Script\Mob_Move.cs" />
     <Compile Include="Assets\Script\Player_Move.cs" />
     <Compile Include="Assets\Script\PoolDam_Move.cs" />
+    <Compile Include="Assets\Script\PoolMob_Move.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

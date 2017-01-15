@@ -1,20 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player_Move : MonoBehaviour {
 
     public GameObject Player;
     public GameObject PoolDam;
 
+    public Slider Sld_HPPoint;
+    public Slider Sld_ExPoint;
+
+    public Text Txt_Level;
+
     public GameObject[] Mob;
 
+    public int Level;
     public int Power;
 
     public bool Attacking;
     public bool LWalking;
     public bool RWalking;
     public bool Facing;
+
+    public float ExPoint;
+    public float ExMax;
+
+    public float[] MobExp;
 
 	// Use this for initialization
 	void Start () {
@@ -78,6 +90,31 @@ public class Player_Move : MonoBehaviour {
             if (Mob[MobNum].GetComponent<Mob_Move>().HPPoint <= 0)
             {
                 Mob[MobNum].GetComponent<Mob_Move>().Death();
+                MobKill(0);
+            }
+            else
+            {
+                Mob[MobNum].GetComponent<Mob_Move>().MoveTime = 0.0f;
+                if (Facing)
+                {
+                    Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.0f;
+                    Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.2f;
+                    Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 0.0f;
+                    Mob[MobNum].GetComponent<Mob_Move>().MadRight = 1.5f;
+
+                    Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(1.5f, 0.0f);
+                    Mob[MobNum].transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                }
+                else
+                {
+                    Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.2f;
+                    Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.0f;
+                    Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 1.5f;
+                    Mob[MobNum].GetComponent<Mob_Move>().MadRight = 0.0f;
+
+                    Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(-1.5f, 0.0f);
+                    Mob[MobNum].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                }
             }
         }
     }
@@ -104,5 +141,18 @@ public class Player_Move : MonoBehaviour {
         }
 
         return MobNum;
+    }
+
+    public void MobKill(int MobNum)
+    {
+        ExPoint += MobExp[MobNum];
+        if (ExPoint >= ExMax)
+        {
+            ExPoint = 0.0f;
+            Level++;
+            Txt_Level.text = "Lv " + Level.ToString();
+            ExMax = Mathf.Floor(ExMax * 1.15f);
+        }
+        Sld_ExPoint.value = ExPoint / ExMax;
     }
 }
