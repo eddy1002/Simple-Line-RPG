@@ -16,15 +16,15 @@ public class PoolDam_Move : MonoBehaviour {
 		
 	}
 
-    public void MakeDam(float X, float Y, int Power)
+    public void MakeDam(float X, float Y, string Text, Color Color)
     {
         for (int DamNum = 0; DamNum < DamText.Length; DamNum++)
         {
-            if (!DamText[DamNum].active)
+            if (!DamText[DamNum].activeSelf)
             {
                 DamText[DamNum].transform.position = new Vector2(X, Y);
                 DamText[DamNum].SetActive(true);
-                DamText[DamNum].GetComponent<DamText_Move>().DamStart(Power);
+                DamText[DamNum].GetComponent<DamText_Move>().DamStart(Text, Color);
                 break;    
             }
         }

@@ -12,11 +12,14 @@ public class Player_Move : MonoBehaviour {
     public Slider Sld_ExPoint;
 
     public Text Txt_Level;
+    public Text Txt_Power;
+    public Text Txt_Money;
 
     public GameObject[] Mob;
 
     public int Level;
     public int Power;
+    public int Money;
 
     public bool Attacking;
     public bool LWalking;
@@ -27,6 +30,8 @@ public class Player_Move : MonoBehaviour {
     public float ExMax;
 
     public float[] MobExp;
+
+    public Color[] Colors;
 
 	// Use this for initialization
 	void Start () {
@@ -84,13 +89,14 @@ public class Player_Move : MonoBehaviour {
         if (MobNum >= 0)
         {
             int FinalPower = (int)Mathf.Round(Power * Random.Range(0.75f, 1.25f));
-            PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.75f, FinalPower);
+            PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.75f, FinalPower.ToString(), Colors[0]);
 
             Mob[MobNum].GetComponent<Mob_Move>().HPPoint -= FinalPower;
             if (Mob[MobNum].GetComponent<Mob_Move>().HPPoint <= 0)
             {
                 Mob[MobNum].GetComponent<Mob_Move>().Death();
                 MobKill(0);
+                PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.15f, "+ 10금", Colors[1]);
             }
             else
             {
@@ -146,12 +152,17 @@ public class Player_Move : MonoBehaviour {
     public void MobKill(int MobNum)
     {
         ExPoint += MobExp[MobNum];
+        Money += 10;
+        Txt_Money.text = Money.ToString();
         if (ExPoint >= ExMax)
         {
             ExPoint = 0.0f;
             Level++;
             Txt_Level.text = "Lv " + Level.ToString();
             ExMax = Mathf.Floor(ExMax * 1.15f);
+
+            Power = 10 + Level * 2;
+            Txt_Power.text = Power.ToString();
         }
         Sld_ExPoint.value = ExPoint / ExMax;
     }
