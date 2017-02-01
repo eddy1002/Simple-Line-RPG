@@ -86,41 +86,42 @@ public class Player_Move : MonoBehaviour {
     public void Attack()
     {
         int MobNum = FindMob();
-        if (MobNum >= 0)
-        {
-            int FinalPower = (int)Mathf.Round(Power * Random.Range(0.75f, 1.25f));
-            PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.75f, FinalPower.ToString(), Colors[0]);
 
-            Mob[MobNum].GetComponent<Mob_Move>().HPPoint -= FinalPower;
-            if (Mob[MobNum].GetComponent<Mob_Move>().HPPoint <= 0)
+        if (MobNum < 0)
+            return;
+
+        int FinalPower = (int)Mathf.Round(Power * Random.Range(0.75f, 1.25f));
+        PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.75f, FinalPower.ToString(), Colors[0]);
+
+        Mob[MobNum].GetComponent<Mob_Move>().HPPoint -= FinalPower;
+        if (Mob[MobNum].GetComponent<Mob_Move>().HPPoint <= 0)
+        {
+            Mob[MobNum].GetComponent<Mob_Move>().Death();
+            MobKill(0);
+            PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.15f, "+ 10금", Colors[1]);
+        }
+        else
+        {
+            Mob[MobNum].GetComponent<Mob_Move>().MoveTime = 0.0f;
+            if (Facing)
             {
-                Mob[MobNum].GetComponent<Mob_Move>().Death();
-                MobKill(0);
-                PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[MobNum].transform.position.x, 0.15f, "+ 10금", Colors[1]);
+                Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.0f;
+                Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.2f;
+                Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 0.0f;
+                Mob[MobNum].GetComponent<Mob_Move>().MadRight = 1.5f;
+
+                Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(1.5f, 0.0f);
+                Mob[MobNum].transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
             }
             else
             {
-                Mob[MobNum].GetComponent<Mob_Move>().MoveTime = 0.0f;
-                if (Facing)
-                {
-                    Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.0f;
-                    Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.2f;
-                    Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 0.0f;
-                    Mob[MobNum].GetComponent<Mob_Move>().MadRight = 1.5f;
+                Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.2f;
+                Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.0f;
+                Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 1.5f;
+                Mob[MobNum].GetComponent<Mob_Move>().MadRight = 0.0f;
 
-                    Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(1.5f, 0.0f);
-                    Mob[MobNum].transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-                }
-                else
-                {
-                    Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.2f;
-                    Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.0f;
-                    Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 1.5f;
-                    Mob[MobNum].GetComponent<Mob_Move>().MadRight = 0.0f;
-
-                    Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(-1.5f, 0.0f);
-                    Mob[MobNum].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                }
+                Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(-1.5f, 0.0f);
+                Mob[MobNum].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             }
         }
     }
@@ -131,17 +132,17 @@ public class Player_Move : MonoBehaviour {
         float MobRangeBank = -1.0f;
         for (int i = 0; i < Mob.Length; i++)
         {
-            if (Mob[i].GetComponent<Mob_Move>().HPPoint > 0)
+            if (Mob[i].GetComponent<Mob_Move>().HPPoint <= 0)
+                continue;
+
+            float MobFacing = Mob[i].transform.position.x - Player.transform.position.x;
+            float MobRange = Vector2.Distance(Mob[i].transform.position, Player.transform.position);
+            if (Facing && MobFacing > 0.0f || !Facing && MobFacing <= 0.0f)
             {
-                float MobFacing = Mob[i].transform.position.x - Player.transform.position.x;
-                float MobRange = Vector2.Distance(Mob[i].transform.position, Player.transform.position);
-                if (Facing && MobFacing > 0.0f || !Facing && MobFacing <= 0.0f)
+                if (MobRange < 1.75 && (MobRangeBank == -1.0f || MobRangeBank > MobRange))
                 {
-                    if (MobRange < 1.75 && (MobRangeBank == -1.0f || MobRangeBank > MobRange))
-                    {
-                        MobRangeBank = MobRange;
-                        MobNum = i;
-                    }
+                    MobRangeBank = MobRange;
+                    MobNum = i;
                 }
             }
         }
