@@ -53,6 +53,16 @@ public class Player_Move : MonoBehaviour {
         Player.GetComponent<Animator>().SetFloat("Attack", 0);
     }
 
+    public void Skill00Start()
+    {
+        Player.GetComponent<Animator>().SetFloat("Attack", 2);
+    }
+
+    public void Skill00End()
+    {
+        Player.GetComponent<Animator>().SetFloat("Attack", 0);
+    }
+
     public void MoveLeftStart()
     {
         LWalking = true;
@@ -102,27 +112,64 @@ public class Player_Move : MonoBehaviour {
         }
         else
         {
-            Mob[MobNum].GetComponent<Mob_Move>().MoveTime = 0.0f;
-            if (Facing)
-            {
-                Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.0f;
-                Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.2f;
-                Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 0.0f;
-                Mob[MobNum].GetComponent<Mob_Move>().MadRight = 1.5f;
+            AttackMob(MobNum);
+        }
+    }
 
-                Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(1.5f, 0.0f);
-                Mob[MobNum].transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-            }
-            else
-            {
-                Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.2f;
-                Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.0f;
-                Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 1.5f;
-                Mob[MobNum].GetComponent<Mob_Move>().MadRight = 0.0f;
+    public void Skill00()
+    {
+        for (int i = 0; i < Mob.Length; i++)
+        {
+            if (Mob[i].GetComponent<Mob_Move>().HPPoint <= 0)
+                continue;
 
-                Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(-1.5f, 0.0f);
-                Mob[MobNum].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            float MobFacing = Mob[i].transform.position.x - Player.transform.position.x;
+            float MobRange = Vector2.Distance(Mob[i].transform.position, Player.transform.position);
+            if (Facing && MobFacing > 0.0f || !Facing && MobFacing <= 0.0f)
+            {
+                if (MobRange < 1.75)
+                {
+                    int FinalPower = (int)Mathf.Round(Power * Random.Range(0.75f, 1.25f) * 1.5f);
+                    PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[i].transform.position.x, 0.75f, FinalPower.ToString(), Colors[0]);
+
+                    Mob[i].GetComponent<Mob_Move>().HPPoint -= FinalPower;
+                    if (Mob[i].GetComponent<Mob_Move>().HPPoint <= 0)
+                    {
+                        Mob[i].GetComponent<Mob_Move>().Death();
+                        MobKill(0);
+                        PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[i].transform.position.x, 0.15f, "+ 10금", Colors[1]);
+                    }
+                    else
+                    {
+                        AttackMob(i);
+                    }
+                }
             }
+        }
+    }
+
+    public void AttackMob(int MobNum)
+    {
+        Mob[MobNum].GetComponent<Mob_Move>().MoveTime = 0.0f;
+        if (Facing)
+        {
+            Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.0f;
+            Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.2f;
+            Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 0.0f;
+            Mob[MobNum].GetComponent<Mob_Move>().MadRight = 1.5f;
+
+            Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(1.5f, 0.0f);
+            Mob[MobNum].transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+        }
+        else
+        {
+            Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.2f;
+            Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.0f;
+            Mob[MobNum].GetComponent<Mob_Move>().MadLeft = 1.5f;
+            Mob[MobNum].GetComponent<Mob_Move>().MadRight = 0.0f;
+
+            Mob[MobNum].GetComponent<Rigidbody2D>().velocity = new Vector2(-1.5f, 0.0f);
+            Mob[MobNum].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         }
     }
 
