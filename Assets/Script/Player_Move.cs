@@ -8,12 +8,16 @@ public class Player_Move : MonoBehaviour {
     public GameObject Player;
     public GameObject PoolDam;
 
+    public SpriteRenderer PlayerBody;
+
     public Slider Sld_HPPoint;
     public Slider Sld_ExPoint;
 
     public Text Txt_Level;
     public Text Txt_Power;
     public Text Txt_Money;
+    public Text Txt_HPPoint;
+    public Text Txt_ExPoint;
 
     public GameObject[] Mob;
 
@@ -28,6 +32,9 @@ public class Player_Move : MonoBehaviour {
 
     public float ExPoint;
     public float ExMax;
+    public float HPPoint;
+    public float HPMax;
+    public float GodTime;
 
     public float[] MobExp;
 
@@ -39,8 +46,17 @@ public class Player_Move : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void FixedUpdate () {
+        if (GodTime > 0.0f) {
+            GodTime -= Time.deltaTime;
+
+            float GodEffectTime = GodTime * 10 - Mathf.Floor(GodTime * 10);
+
+            if (GodEffectTime < 0.5f || GodTime <= 0.0f)
+                PlayerBody.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            else
+                PlayerBody.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+        }
 	}
 
     public void AttackStart()
@@ -213,5 +229,6 @@ public class Player_Move : MonoBehaviour {
             Txt_Power.text = Power.ToString();
         }
         Sld_ExPoint.value = ExPoint / ExMax;
+        Txt_ExPoint.text = ExPoint.ToString() + " / " + ExMax.ToString();
     }
 }

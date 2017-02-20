@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Mob_Move : MonoBehaviour {
 
+    public GameObject Player;
+
     public int HPPoint;
     public int MoveRandom;
 
@@ -66,6 +68,20 @@ public class Mob_Move : MonoBehaviour {
                 MadLeft -= Time.deltaTime;
             if (MadRight > 0.0f)
                 MadRight -= Time.deltaTime;
+        }
+
+        Player_Move PlayerMove = Player.GetComponent<Player_Move>();
+
+        if (HPPoint > 0.0f)
+        {
+            if (Mathf.Abs(gameObject.transform.position.x - Player.transform.position.x) < 1.0f && PlayerMove.GodTime <= 0.0f)
+            {
+                PlayerMove.GodTime = 3.0f;
+                PlayerMove.HPPoint -= 5.0f;
+
+                PlayerMove.Sld_HPPoint.value = PlayerMove.HPPoint / PlayerMove.HPMax;
+                PlayerMove.Txt_HPPoint.text = PlayerMove.HPPoint.ToString() + " / " + PlayerMove.HPMax.ToString();
+            }
         }
 	}
 
