@@ -24,11 +24,13 @@ public class Player_Move : MonoBehaviour {
     public int Level;
     public int Power;
     public int Money;
+    public int Skill02Time;
 
     public bool Attacking;
     public bool LWalking;
     public bool RWalking;
     public bool Facing;
+    public bool GodMod;
 
     public float ExPoint;
     public float ExMax;
@@ -57,7 +59,13 @@ public class Player_Move : MonoBehaviour {
             else
                 PlayerBody.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
         }
-	}
+
+        if (Player.transform.position.x > 7.0f)
+            Player.transform.position = new Vector2(7.0f, 0.0f);
+
+        if (Player.transform.position.x < -7.0f)
+            Player.transform.position = new Vector2(-7.0f, 0.0f);
+    }
 
     public void AttackStart()
     {
@@ -75,6 +83,22 @@ public class Player_Move : MonoBehaviour {
     }
 
     public void Skill00End()
+    {
+        Player.GetComponent<Animator>().SetFloat("Attack", 0);
+    }
+
+    public void Skill01Do()
+    {
+        Player.GetComponent<Animator>().SetFloat("Attack", 3);
+    }
+
+    public void Skill02Start()
+    {
+        Player.GetComponent<Animator>().SetFloat("Attack", 4);
+        Skill02Time = 20;
+    }
+
+    public void Skill02End()
     {
         Player.GetComponent<Animator>().SetFloat("Attack", 0);
     }
@@ -141,7 +165,7 @@ public class Player_Move : MonoBehaviour {
 
             float MobFacing = Mob[i].transform.position.x - Player.transform.position.x;
             float MobRange = Vector2.Distance(Mob[i].transform.position, Player.transform.position);
-            if (Facing && MobFacing > 0.0f || !Facing && MobFacing <= 0.0f)
+            if (Facing && MobFacing > -0.5f || !Facing && MobFacing < 0.5f)
             {
                 if (MobRange < 1.75)
                 {
@@ -164,10 +188,95 @@ public class Player_Move : MonoBehaviour {
         }
     }
 
+    public void Skill01A()
+    {
+        if (!Facing)
+            Player.GetComponent<Rigidbody2D>().velocity = new Vector2(-10.0f, 0.0f);
+        else
+            Player.GetComponent<Rigidbody2D>().velocity = new Vector2(10.0f, 0.0f);
+
+        GodMod = true;
+    }
+    public void Skill01B()
+    {
+        Player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        Player.GetComponent<Animator>().SetFloat("Attack", 0);
+
+        GodMod = false;
+    }
+
+    public void Skill01C()
+    {
+        for (int i = 0; i < Mob.Length; i++)
+        {
+            if (Mob[i].GetComponent<Mob_Move>().HPPoint <= 0)
+                continue;
+
+            float MobFacing = Mob[i].transform.position.x - Player.transform.position.x;
+            float MobRange = Vector2.Distance(Mob[i].transform.position, Player.transform.position);
+            if (Facing && MobFacing > -1.0f || !Facing && MobFacing < 1.0f)
+            {
+                if (MobRange < 5)
+                {
+                    int FinalPower = (int)Mathf.Round(Power * Random.Range(0.75f, 1.25f) * 1.5f);
+                    PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[i].transform.position.x, 0.75f, FinalPower.ToString(), Colors[0]);
+
+                    Mob[i].GetComponent<Mob_Move>().HPPoint -= FinalPower;
+                    if (Mob[i].GetComponent<Mob_Move>().HPPoint <= 0)
+                    {
+                        Mob[i].GetComponent<Mob_Move>().Death();
+                        MobKill(0);
+                        PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[i].transform.position.x, 0.15f, "+ 10금", Colors[1]);
+                    }
+                    else
+                    {
+                        AttackMob(i);
+                    }
+                }
+            }
+        }
+    }
+
+    public void Skill02A()
+    {
+        for (int i = 0; i < Mob.Length; i++)
+        {
+            if (Mob[i].GetComponent<Mob_Move>().HPPoint <= 0)
+                continue;
+
+            float MobRange = Vector2.Distance(Mob[i].transform.position, Player.transform.position);
+            if (MobRange < 2.5)
+            {
+                int FinalPower = (int)Mathf.Round(Power * Random.Range(0.75f, 1.25f) * 0.25f);
+                PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[i].transform.position.x, 0.75f, FinalPower.ToString(), Colors[0]);
+
+                Mob[i].GetComponent<Mob_Move>().HPPoint -= FinalPower;
+                if (Mob[i].GetComponent<Mob_Move>().HPPoint <= 0)
+                {
+                    Mob[i].GetComponent<Mob_Move>().Death();
+                    MobKill(0);
+                    PoolDam.GetComponent<PoolDam_Move>().MakeDam(Mob[i].transform.position.x, 0.15f, "+ 10금", Colors[1]);
+                }
+                else
+                {
+                    AttackMob(i);
+                }
+            }
+        }
+    }
+    public void Skill02B()
+    {
+        Skill02Time -= 1;
+
+        if (Skill02Time <= 0)
+            Skill02End();
+    }
+
     public void AttackMob(int MobNum)
     {
         Mob[MobNum].GetComponent<Mob_Move>().MoveTime = 0.0f;
-        if (Facing)
+        float NuckFacing = Mob[MobNum].transform.position.x - Player.transform.position.x;
+        if (NuckFacing > 0.0f)
         {
             Mob[MobNum].GetComponent<Mob_Move>().NuckLeft = 0.0f;
             Mob[MobNum].GetComponent<Mob_Move>().NuckRight = 0.2f;

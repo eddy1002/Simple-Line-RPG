@@ -74,7 +74,7 @@ public class Mob_Move : MonoBehaviour {
 
         if (HPPoint > 0.0f)
         {
-            if (Mathf.Abs(gameObject.transform.position.x - Player.transform.position.x) < 1.0f && PlayerMove.GodTime <= 0.0f)
+            if (Mathf.Abs(gameObject.transform.position.x - Player.transform.position.x) < 1.0f && PlayerMove.GodTime <= 0.0f && !PlayerMove.GodMod)
             {
                 PlayerMove.GodTime = 3.0f;
                 PlayerMove.HPPoint -= 5.0f;

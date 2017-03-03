@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple-Line-RPG", "Simple-Line-RPG.csproj", "{51207F53-C49E-A14F-A425-FC495098F358}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple-Line-RPG.CSharp", "Simple-Line-RPG.CSharp.csproj", "{733437CF-6CA3-CD8B-E85A-E9F6E9F89237}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{51207F53-C49E-A14F-A425-FC495098F358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51207F53-C49E-A14F-A425-FC495098F358}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51207F53-C49E-A14F-A425-FC495098F358}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51207F53-C49E-A14F-A425-FC495098F358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{733437CF-6CA3-CD8B-E85A-E9F6E9F89237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{733437CF-6CA3-CD8B-E85A-E9F6E9F89237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{733437CF-6CA3-CD8B-E85A-E9F6E9F89237}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{733437CF-6CA3-CD8B-E85A-E9F6E9F89237}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
